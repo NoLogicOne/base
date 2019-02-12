@@ -6,7 +6,7 @@ var testedTree = createTestedTree();
 describe('existing class', () => {
 
   it('tree exist', () => {
-    let newTree = new Tree('data');
+    let newTree = new Tree('id');
     expect(typeof newTree === 'object');
   });
 
@@ -18,9 +18,15 @@ describe('existing class', () => {
 
 describe('class properties', () => {
   
-	it('tree-root is node', () => {
-		let newTree = new Tree('data');
-		expect(newTree._root instanceof Node);
+  it('tree-root is node', () => {
+    let newTree = new Tree('id');
+    expect(newTree._root instanceof Node);
+  });  
+
+	it('tree-root has children', () => {
+		let newTree = createTestedTree();
+
+		expect(newTree._root.children instanceof Array);
 	});
 
 });
@@ -32,7 +38,7 @@ describe("traverseDF", () => {
   	let result = [];
 
   	testedTree.traverseDF((node) => {
-  		result.push(node.data);
+  		result.push(node.id);
   	})
 
   	expect(result).toEqual(expectedArray);
@@ -50,7 +56,7 @@ describe("Tree add", () => {
 
 
   	tree.traverseDF((node) => {
-  		result.push(node.data);
+  		result.push(node.id);
   	});
 
   	expect(result).toEqual(expectedArray);
@@ -65,7 +71,7 @@ describe("Tree add", () => {
 
 
   	tree.traverseDF((node) => {
-  		result.push(node.data);
+  		result.push(node.id);
   	});
 
   	expect(result).toEqual(expectedArray);
@@ -80,7 +86,7 @@ describe("Tree add", () => {
 
 
   	tree.traverseBF((node) => {
-  		result.push(node.data);
+  		result.push(node.id);
   	});
 
   	expect(result).toEqual(expectedArray);
@@ -103,7 +109,7 @@ describe("Tree remove", () => {
   	tree.remove('six');
 
   	tree.traverseBF((node) => {
-  		result.push(node.data);
+  		result.push(node.id);
   	})
 
   	expect(result).toEqual(expectedArray);
@@ -117,7 +123,7 @@ describe("Tree remove", () => {
   	tree.remove('two');
 
   	tree.traverseBF((node) => {
-  		result.push(node.data);
+  		result.push(node.id);
   	})
 
   	expect(result).toEqual(expectedArray);
@@ -132,7 +138,7 @@ describe("traverseBF", () => {
   	let result = [];
 
   	testedTree.traverseBF((node) => {
-  		result.push(node.data);
+  		result.push(node.id);
   	})
 
   	expect(result).toEqual(expectedArray);
@@ -144,23 +150,12 @@ describe("traverseBF", () => {
 function createTestedTree(){
 	var tree = new Tree('one');
 
-	tree._root.children.push(new Node('two'));
-	tree._root.children[0].parent = tree.__getNode();
-
-	tree._root.children.push(new Node('three'));
-	tree._root.children[1].parent = tree.__getNode();
-
-	tree._root.children.push(new Node('four'));
-	tree._root.children[2].parent = tree.__getNode();
-
-	tree._root.children[0].children.push(new Node('five'));
-	tree._root.children[0].children[0].parent = tree._root.children[0];
-
-	tree._root.children[0].children.push(new Node('six'));
-	tree._root.children[0].children[1].parent = tree._root.children[0];
-
-	tree._root.children[2].children.push(new Node('seven'));
-	tree._root.children[2].children[0].parent = tree._root.children[2];
+  tree.add('two', 'one');
+  tree.add('three', 'one');
+  tree.add('four', 'one');
+  tree.add('five', 'two');
+  tree.add('six', 'two');
+  tree.add('seven', 'four');
 
 /*
 

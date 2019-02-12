@@ -3,8 +3,8 @@ import Node  from "./Node.js";
 
 
 export default class Tree {
-    constructor(data){
-        let node = new Node(data);
+    constructor(id, data){
+        let node = new Node(id, data);
         this._root = node;
     }
 
@@ -12,15 +12,27 @@ export default class Tree {
         return this._root; 
     }
 
-    add(data, newParent = this._root, traversal = this.traverseDF) {
-        let child  = new Node(data);
+    getElement(id, traversal = this.traverseBF) {
+        let result = {};
+
+        traversal.call(this, (node) => {
+            if(node.id === id) {
+                result = node;
+            }
+        });
+
+        return result;
+    }
+
+    add(id, newParent = this._root.id, traversal = this.traverseDF) {
+        let child  = new Node(id);
         let parent = null;
 
         let callback = (node) => {
-            if(node.data === newParent){
+            if(node.id === newParent){
                 parent = node;
             }
-            if(node.data === data){
+            if(node.id === id){
                 throw new Error('this element already exists');
             }
         };
@@ -36,27 +48,19 @@ export default class Tree {
 
     }
 
-    remove(data){
-        let nodeToRemove = "";
-
-        let callback = (node) => {
-            if(node.data === data){
-                nodeToRemove = node;
-            }
-        };
-
-        this.traverseBF(callback);
-
-        nodeToRemove.parent.__getNode().forgetChild(data);
-
+    remove(id){
+        let nodeToRemove = this.getElement(id); //deleted node link
+        
+        nodeToRemove.parent.__getNode().forgetChild(id);
     }
 
     traverseDF(callback){
         (function recurse(currentNode)  {
+
             currentNode.children.map(curr => {
                 recurse(curr);
             })
-            
+        
             callback(currentNode);
 
         })(this._root);      
@@ -78,5 +82,4 @@ export default class Tree {
             currentTree = queue.dequeue();
         }
     }
-
 }
